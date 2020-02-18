@@ -13,22 +13,28 @@ import pandas_datareader as web
 import requests
 
 from sklearn.preprocessing import StandardScaler
+rewards = []
 
 
 # Let's use AAPL (Apple), MSI (Motorola), SBUX (Starbucks)
 def get_data():
+    save = False
     stocks = ['HBOR3','JHSF3','MRVE3']
     
-    start = dt.datetime(2015,1,1)
-    end = dt.datetime(2019,12,22)
-    df = pd.DataFrame()
-    for stock,i in zip(stocks,range(len(stocks))):
-        if not i:
-            df = pd.DataFrame(web.DataReader(stock + '.SA','yahoo',start,end)['Close'])
-            df = df.rename(columns = {'Close': stock})
-        else:
-            df = df.join(pd.DataFrame(web.DataReader(stock + '.SA','yahoo',start,end)['Close']).rename(columns = {'Close':stock}))
-
+    if save:
+        start = dt.datetime(2015,1,1)
+        end = dt.datetime(2019,12,22)
+        df = pd.DataFrame()
+        for stock,i in zip(stocks,range(len(stocks))):
+            if not i:
+                df = pd.DataFrame(web.DataReader(stock + '.SA','yahoo',start,end)['Close'])
+                df = df.rename(columns = {'Close': stock})
+            else:
+                df = df.join(pd.DataFrame(web.DataReader(stock + '.SA','yahoo',start,end)['Close']).rename(columns = {'Close':stock}))
+        
+        df.to_csv('stocks.csv')
+    else:
+        df = pd.read_csv('stocks.csv').drop(columns = ['Date'])
     # returns a T x 3 list of stock prices
     # each row is a different stock
     # 0 = AAPL
@@ -44,7 +50,7 @@ def get_data():
 def get_scaler(env):
   # return scikit-learn scaler object to scale the states
   # Note: you could also populate the replay buffer here
-
+  
   states = []
   for _ in range(env.n_step):
     action = np.random.choice(env.action_space)
@@ -271,7 +277,7 @@ class DQNAgent(object):
     self.action_size = action_size
     self.gamma = 0.95  # discount rate
     self.epsilon = 1.0  # exploration rate
-    self.epsilon_min = 0.01
+    self.epsilon_min = 0.0001
     self.epsilon_decay = 0.995
     self.model = LinearModel(state_size, action_size)
 
@@ -329,7 +335,7 @@ if __name__ == '__main__':
   # config
   models_folder = 'linear_rl_trader_models'
   rewards_folder = 'linear_rl_trader_rewards'
-  num_episodes = 2000
+  num_episodes = 3000
   batch_size = 32
   initial_investment = 10000
 
@@ -381,7 +387,7 @@ if __name__ == '__main__':
     dt = datetime.now() - t0
     print(f"episode: {e + 1}/{num_episodes}, episode end value: {val:.2f}, duration: {dt}")
     portfolio_value.append(val) # append episode end portfolio value
-
+    rewards.append(val)
   # save the weights when we are done
   if args.mode == 'train':
     # save the DQN
@@ -392,9 +398,16 @@ if __name__ == '__main__':
       pickle.dump(scaler, f)
 
     # plot losses
+    plt.figure(1)
     plt.plot(agent.model.losses)
     plt.show()
 
-
+    plt.figure(2)
+    plt.scatter(range(num_episodes),rewards,color = 'k',marker = "o")
+    plt.plot([0,num_episodes],[10000,10000],'b-', lw = 2)
+    plt.xlabel('época')
+    plt.ylabel('valor')
+    plt.title('Evolução da recompensa')
+    plt.show()
   # save portfolio value for each episode
   np.save(f'{rewards_folder}/{args.mode}.npy', portfolio_value)
