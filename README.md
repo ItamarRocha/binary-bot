@@ -35,6 +35,8 @@ The data was gathered from the site IQ option API with the functions already men
 
 To use the code manteined in this repository, put your own username and password (in iq.py). Any alterations or improvements done in the code can be comunicated by email or in the issues tab.
 After adding your personal information, just run the testing.py script and you are ready to go.
+
+![results](result_binary.png)
 ## License
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
