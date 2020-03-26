@@ -1,3 +1,8 @@
+[![author](https://img.shields.io/badge/author-ItamarRocha-red.svg)](https://github.com/ItamarRocha) 
+[![author](https://img.shields.io/badge/author-voidzero-red.svg)](https://github.com/void-zero) 
+[![author](https://img.shields.io/badge/author-jpvt-red.svg)](https://github.com/jpvt) 
+[![](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-365/)
+
 # binary-bot
 Project of AI class at UFPB
 
