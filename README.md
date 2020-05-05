@@ -5,6 +5,7 @@
 
 # binary-bot
 Project of AI class at UFPB
+This Project is under development. Any doubts or suggestion can be done in the Issues tab or by email.
 
 ## Contents
 - [Motivation](#Motivation)
@@ -18,7 +19,7 @@ The purpose of this Artificial Intelligence project is to predict the result of 
 
 ## Setup
 - IQ OPTION API
-Can be found in github at : https://github.com/Lu-Yi-Hsun/iqoptionapi
+Can be found in github at : https://github.com/Lu-Yi-Hsun/iqoptionapi (you must install it before running the code)
 - tensorflow
 ```shell
 $ pip install tensorflow
