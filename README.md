@@ -3,9 +3,10 @@
 [![author](https://img.shields.io/badge/author-jpvt-red.svg)](https://github.com/jpvt) 
 [![](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-365/)
 
+# binary-bot
+
 ![result](imgs/mac_forex.jpg)
 
-# binary-bot
 Project of AI class at UFPB
 This Project is under development. Any doubts or suggestion can be done in the Issues tab or by email.
 
