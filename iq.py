@@ -16,7 +16,7 @@ def login(verbose = False):
     if verbose:
         logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
 
-    iq=IQ_Option('itamar1701@hotmail.com','Nena0815') # YOU HAVE TO ADD YOUR USERNAME AND PASSWORD
+    iq=IQ_Option(USERNAME,PASSWORD) # YOU HAVE TO ADD YOUR USERNAME AND PASSWORD
     iq.change_balance("PRACTICE") #or real
     return iq
 
