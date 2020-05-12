@@ -4,13 +4,10 @@ from sklearn.preprocessing import MinMaxScaler
 from collections import deque
 import datetime
 import time
-from iq import get_profit,fast_data,higher,lower,login,get_balance
+from iq import fast_data,higher,lower,login
 from training import train_data
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, LSTM, BatchNormalization
-from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
-from tensorflow.compat.v1.keras.layers import CuDNNLSTM
+import sys
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
@@ -39,7 +36,11 @@ def preprocess_prediciton(iq):
             main = main.join(current)
     
     df = main
-    #duplis = df.loc[df.duplicated() == True] # the duplicates are explained by the volume 0 
+    
+    """
+    graphical analysis components
+    """
+    
     df.isnull().sum().sum() # there are no nans
     df.fillna(method="ffill", inplace=True)
     df = df.loc[~df.index.duplicated(keep = 'first')]
@@ -70,7 +71,9 @@ def preprocess_prediciton(iq):
     rs = abs(avg_gain/avg_loss)
     df['rsi'] = 100-(100/(1+rs))
     
-    
+    """
+    Finishing preprocessing
+    """
     df = df.drop(columns = {'open','min','max','avg_gain','avg_loss','L14','H14','gain','loss'})
     
     df = df.dropna()
@@ -101,12 +104,23 @@ def preprocess_prediciton(iq):
     
     return np.array(X)
 
+if(len(sys.argv) == 1):
+    martingale = 2
+    bet_money = 1
+    ratio = 'EURUSD'
+elif(len(sys.argv) != 4):
+    print("The correct pattern is: python testing.py EURUSD (or other currency) INITIAL_BET(value starting in 1$ MIN) MARTINGALE (your martingale ratio default = 2)")
+    print("\n\nEXAMPLE:\npython testing.py EURUSD 1 3")
+    exit(-1)
+else:
+    bet_money = sys.argv[2] #QUANTITY YOU WANT TO BET EACH TIME
+    ratio = sys.argv[1]
+    martingale = sys.argv[3]
+    
+SEQ_LEN = 5  # how long of a preceeding sequence to collect for RNN, if you modify here, remember to modify in the other files too
+FUTURE_PERIOD_PREDICT = 2  # how far into the future are we trying to predict , if you modify here, remember to modify in the other files too
 
 
-SEQ_LEN = 5  # how long of a preceeding sequence to collect for RNN
-FUTURE_PERIOD_PREDICT = 2  # how far into the future are we trying to predict
-
-ratio = 'EURUSD'
 
 NAME = train_data() + '.model'
 model = tf.keras.models.load_model(f'models/{NAME}')
@@ -116,11 +130,10 @@ iq = login()
 i = 0
 bid = True
 bets = []
-MONEY = 10000
-bet_money = 1
+MONEY = 10000 
 trade = True
 
-print("oi 0")
+
 while(1):
     if i >= 10 and i % 2 == 0:
         NAME = train_data() + '.model'
@@ -131,8 +144,9 @@ while(1):
         pred_ready = preprocess_prediciton(iq)             #LOGO, ELE PRECISA DE TEMPO PRA ELABORAR A PREVISÃO ANTES DE ATINGIR OS 59 SEGUNDOS PRA ELE
         pred_ready = pred_ready.reshape(1,SEQ_LEN,pred_ready.shape[3])      #FAZER A APOSTA, ENÃO ELE VAI TENTAR PREVER O VALOR DA TERCEIRA NA FRENTE
         result = model.predict(pred_ready)
-        print('probability of PUT or CALL : ',result)
-        print(f'Time taken : {int(time.time()-time_taker)}')
+        print('probability of PUT: ',result[0][0])
+        print('probability of CALL: ',result[0][1])
+        print(f'Time taken : {int(time.time()-time_taker)} seconds')
         i = i + 1  
 
     if datetime.datetime.now().second == 59 and i%2 == 1:
@@ -149,17 +163,17 @@ while(1):
         else:
             trade = False
             i = i + 1
-        #print("oi 2")
+
         if trade:
             time.sleep(2)
             
             #print(datetime.datetime.now().second)
             
             tempo = datetime.datetime.now().second
-            while(tempo != 1): #ESPERA ATÉ SER 1 PRA PODER VER SE GANHOU OU NÃO
+            while(tempo != 1): #wait till 1 to see if win or lose
                 tempo = datetime.datetime.now().second
                 
-            print(datetime.datetime.now().second)
+            #print(datetime.datetime.now().second)
             betsies = iq.get_optioninfo_v2(1)
             betsies = betsies['msg']['closed_options']
             
@@ -171,12 +185,12 @@ while(1):
                 #print(f'Balance : {get_balance(iq)}')
                 bet_money = 1
                 
-            elif win == ['loose']:
+            elif win == ['lose']:
                 #print(f'Balance : {get_balance(iq)}')
-                bet_money = bet_money * 3
+                bet_money = bet_money * martingale # martingale V3
                 
             else:
                 #print(f'Balance : {get_balance(iq)}')
                 bets.append(0)
-            print(bet_money)
+            #print(bet_money)
             

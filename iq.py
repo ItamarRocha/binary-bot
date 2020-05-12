@@ -4,23 +4,20 @@ Spyder Editor
 
 Este é um arquivo de script temporário.
 """
-import sys
+
 import logging
 import time
 from iqoptionapi.stable_api import IQ_Option
 import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
-import numpy as np
-from tensorflow.keras.layers import Dense, LSTM, Dropout, Activation
-from tensorflow.keras.models import Sequential
+
 
 def login(verbose = False):
     
     if verbose:
         logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
 
-    iq=IQ_Option(USERNAME,PASSWORD) # YOU HAVE TO ADD YOUR USERNAME AND PASSWORD
-    iq.change_balance("PRACTICE")
+    iq=IQ_Option('itamar1701@hotmail.com','Nena0815') # YOU HAVE TO ADD YOUR USERNAME AND PASSWORD
+    iq.change_balance("PRACTICE") #or real
     return iq
 
 

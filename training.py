@@ -10,6 +10,7 @@ from tensorflow.keras.callbacks import TensorBoard, EarlyStopping
 from iq import get_data_needed ,login
 import time
 
+
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
   try:
@@ -166,7 +167,7 @@ def train_data():
     
     
     LEARNING_RATE = 0.001 #isso mesmo
-    EPOCHS = 40  # how many passes through our data #20 deu bom
+    EPOCHS = 40  # how many passes through our data #20 was good
     BATCH_SIZE = 16  # how many batches? Try smaller batch if you're getting OOM (out of memory) errors.
     NAME = f"{LEARNING_RATE}-{SEQ_LEN}-SEQ-{FUTURE_PERIOD_PREDICT}-{EPOCHS}-{BATCH_SIZE}-PRED-{int(time.time())}"  # a unique name for the model
     print(NAME)
@@ -228,6 +229,10 @@ def train_data():
         callbacks=[tensorboard, checkpoint],
     )
     
+    """
+    
+    THIS CODE PURPOSE IS FOR ACCURACY TEST ONLY
+    
     
     prediction = pd.DataFrame(model.predict(validation_x))
     
@@ -247,10 +252,8 @@ def train_data():
     prediction_compare[0].value_counts() #MOSTRA OS VALORES. COMO A GENTE ESCOLHEU 0 NO OUTRO O 0 TEM QUE TER UMA PROB MAIOR
     len(prediction)
     
-    
-    from sklearn.metrics import accuracy_score
-    
-    acc = accuracy_score(validation_y,prediction)
+    #acc = accuracy_score(validation_y,prediction)
+    """
     
     return filepath
 
