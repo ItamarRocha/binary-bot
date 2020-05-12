@@ -4,6 +4,9 @@
 [![](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-365/)
 
 # binary-bot
+
+![result](imgs/mac_forex.jpg)
+
 Project of AI class at UFPB
 This Project is under development. Any doubts or suggestion can be done in the Issues tab or by email.
 
@@ -42,7 +45,7 @@ The data was gathered from the site IQ option API with the functions already men
 To use the code manteined in this repository, put your own username and password (in iq.py). Any alterations or improvements done in the code can be comunicated by email or in the issues tab.
 After adding your personal information, just run the testing.py script and you are ready to go.
 
-![results](result_binary.png)
+![results](imgs/result_binary.png)
 ## License
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
