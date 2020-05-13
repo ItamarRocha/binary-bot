@@ -23,6 +23,9 @@ The purpose of this Artificial Intelligence project is to predict the result of 
 ## Setup
 - IQ OPTION API
 Can be found in github at : https://github.com/Lu-Yi-Hsun/iqoptionapi (you must install it before running the code)
+```shell
+$ pip install -U git+git://github.com/Lu-Yi-Hsun/iqoptionapi.git
+```
 - tensorflow
 ```shell
 $ pip install tensorflow
