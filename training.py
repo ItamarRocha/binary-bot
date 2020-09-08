@@ -10,18 +10,17 @@ from tensorflow.keras.callbacks import TensorBoard, EarlyStopping
 from iq import get_data_needed ,login
 import time
 
-
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
-  try:
+try:
+  gpus = tf.config.experimental.list_physical_devices('GPU')
+  if gpus:
     # Currently, memory growth needs to be the same across GPUs
     for gpu in gpus:
       tf.config.experimental.set_memory_growth(gpu, True)
     logical_gpus = tf.config.experimental.list_logical_devices('GPU')
     print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-  except RuntimeError as e:
-    # Memory growth must be set before GPUs have been initialized
-    print(e)
+except Exception as e:
+  # Memory growth must be set before GPUs have been initialized
+  print(e)
 
 SEQ_LEN = 5 # how long
 FUTURE_PERIOD_PREDICT = 2  # how far into the future are we trying to predict
@@ -173,19 +172,19 @@ def train_data():
     print(NAME)
     
     
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    if gpus:
-      try:
+    try:
+      gpus = tf.config.experimental.list_physical_devices('GPU')
+      if gpus:
         # Currently, memory growth needs to be the same across GPUs
         for gpu in gpus:
           tf.config.experimental.set_memory_growth(gpu, True)
         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
         print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-      except RuntimeError as e:
-        # Memory growth must be set before GPUs have been initialized
-        print(e)
+    except Exception as e:
+      # Memory growth must be set before GPUs have been initialized
+      print(e)
     
-    
+    earlyStoppingCallback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
     model = Sequential()
     model.add(LSTM(128, input_shape=(train_x.shape[1:]), return_sequences=True))
     model.add(Dropout(0.2))
@@ -226,7 +225,7 @@ def train_data():
         batch_size=BATCH_SIZE,
         epochs=EPOCHS,
         validation_data=(validation_x, validation_y),
-        callbacks=[tensorboard, checkpoint],
+        callbacks=[tensorboard, checkpoint, earlyStoppingCallback],
     )
     
     """
